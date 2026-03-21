@@ -1,0 +1,370 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        -32
+      ],
+      "id": "828c364f-8b7a-4e20-890a-77cf1f789df8",
+      "name": "Daily Scheduled Run"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk",
+          "mode": "list",
+          "cachedResultName": "n8n Project",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1026370214,
+          "mode": "list",
+          "cachedResultName": "PO_Items",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk/edit#gid=1026370214"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -704,
+        -128
+      ],
+      "id": "a116adbb-d557-4883-97cc-12856640c616",
+      "name": "Ingest SAP PO Data (EKPO)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pOgJLXEB7jSX8Yiq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk",
+          "mode": "list",
+          "cachedResultName": "n8n Project",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 650961134,
+          "mode": "list",
+          "cachedResultName": "Logistics_Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk/edit#gid=650961134"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -704,
+        64
+      ],
+      "id": "62cbbc6b-2678-48d4-9130-da1633ecf56d",
+      "name": "Ingest Logistics API Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pOgJLXEB7jSX8Yiq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "PO_Number",
+              "field2": "PO_Number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "1386baf3-bfba-4404-b8c1-d766c1e86e23",
+      "name": "INNER JOIN: PO x Logistics"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "25513f7f-cc4a-4fdf-a634-cd777a223dec",
+              "leftValue": "={{ $json.Current_Status }}",
+              "rightValue": "Delayed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        -128
+      ],
+      "id": "698e7b39-17da-42b7-b86d-09ceff534dd8",
+      "name": "Anomaly Detector (Late & Delayed)"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ANU1QRFKJ",
+          "mode": "list",
+          "cachedResultName": "supply-chain-alerts"
+        },
+        "text": "=PO Number: *{{ $json.PO_Number }}* \nMaterial: {{ $json.Material_ID }} \nStatus: {{ $json.Current_Status }} \nExpected Delivery: {{ $json.Expected_Delivery_Date }} \nUpdated ETA: {{ $json.Updated_ETA }}  \n\nPlease contact the carrier immediately to expedite.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        368,
+        -144
+      ],
+      "id": "acd887ec-6669-469b-bb4c-f97462a20586",
+      "name": "Slack Alert: SC Ops Team",
+      "webhookId": "0b73bfac-2a26-4a76-a4f0-67d96ecd36d1",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "LdiO3FcMQsEiQwm1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk",
+          "mode": "list",
+          "cachedResultName": "n8n Project",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 991656423,
+          "mode": "list",
+          "cachedResultName": "Dashboard_Feed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10vYDgK6XzBUgQyrumMVrYGPQN_e8p_BhkxlB7ncRhvk/edit#gid=991656423"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "PO_Number",
+              "displayName": "PO_Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Material_ID",
+              "displayName": "Material_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Current_Status",
+              "displayName": "Current_Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expected_Delivery_Date",
+              "displayName": "Expected_Delivery_Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Updated_ETA",
+              "displayName": "Updated_ETA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Item_No",
+              "displayName": "Item_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Tracking_ID",
+              "displayName": "Tracking_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        64
+      ],
+      "id": "b70438de-1d8c-4af6-8ca7-07a4bbf3bcf6",
+      "name": "Push to BI Data Warehouse",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pOgJLXEB7jSX8Yiq",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily Scheduled Run": {
+      "main": [
+        [
+          {
+            "node": "Ingest SAP PO Data (EKPO)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ingest Logistics API Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingest SAP PO Data (EKPO)": {
+      "main": [
+        [
+          {
+            "node": "INNER JOIN: PO x Logistics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ingest Logistics API Data": {
+      "main": [
+        [
+          {
+            "node": "INNER JOIN: PO x Logistics",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "INNER JOIN: PO x Logistics": {
+      "main": [
+        [
+          {
+            "node": "Anomaly Detector (Late & Delayed)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Push to BI Data Warehouse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anomaly Detector (Late & Delayed)": {
+      "main": [
+        [
+          {
+            "node": "Slack Alert: SC Ops Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push to BI Data Warehouse": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "547a86b1-0019-4a57-9e87-324c640c6e9b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e4a573206be7cb2b5f5ca79e5fe71cef90dc1f6486ed94bd84d872ddc9515501"
+  },
+  "id": "559cJ649q2IwRYaJ",
+  "tags": []
+}
