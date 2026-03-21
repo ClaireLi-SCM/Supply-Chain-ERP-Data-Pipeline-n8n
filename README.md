@@ -15,10 +15,10 @@ Using **n8n**, I created a workflow that:
 
 ### 🖼️ How it looks
 **The Workflow:**
-![Workflow](image_e27f24.png)
+![Workflow](Screenshot 2026-03-20 213127)
 
 **The Result (Slack Alert):**
-![Slack Alert](YOUR_SLACK_IMAGE_FILENAME.png)
+![Slack Alert](Screenshot 2026-03-20 214003)
 
 ---
 
