@@ -25,6 +25,7 @@ Using **n8n**, I created a workflow that:
 
 
 **The Result (Slack Alert):**
+
 ![Slack Alert](slack_alerts.png)
 
 ---
