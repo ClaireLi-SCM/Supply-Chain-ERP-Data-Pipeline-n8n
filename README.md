@@ -36,5 +36,3 @@ Using **n8n**, I created a workflow that:
 * **Slack** (The alerts)
 * **Google Sheets** (The final dashboard)
 
----
-**Looking for a Supply Chain Analyst who loves to automate? [Let's chat on LinkedIn!](YOUR_LINKEDIN_URL)**
