@@ -2,8 +2,12 @@
 
 I built this simple automation to stop the "SAP-to-Excel" struggle. Instead of jumping between T-codes and doing manual VLOOKUPs, this flow handles the heavy lifting.
 
+---
+
 ### ❓ The Problem
 Manually exporting PO data and matching it with logistics tracking is slow. By the time you find a delay in a spreadsheet, it's usually too late to fix it.
+
+---
 
 ### ✅ The Solution
 Using **n8n**, I created a workflow that:
