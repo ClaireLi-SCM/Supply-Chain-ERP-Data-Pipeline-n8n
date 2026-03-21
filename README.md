@@ -15,10 +15,10 @@ Using **n8n**, I created a workflow that:
 
 ### 🖼️ How it looks
 **The Workflow:**
-![Workflow](n8n_workflow.jpg)
+![Workflow](n8n_workflow.png)
 
 **The Result (Slack Alert):**
-![Slack Alert](slack_alerts.jpg)
+![Slack Alert](slack_alerts.png)
 
 ---
 
