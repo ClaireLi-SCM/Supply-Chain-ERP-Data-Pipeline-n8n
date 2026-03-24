@@ -9,7 +9,7 @@ Manually exporting PO data and matching it with logistics tracking is slow. By t
 
 ---
 
-### ✅ The Solution
+### 💡 The Solution
 Using **n8n**, I created a workflow that:
 1. **Pulls Data:** Grabs SAP POs and live tracking info at the same time.
 2. **Auto-Joins:** Merges them perfectly (no more broken formulas).
@@ -26,9 +26,9 @@ Using **n8n**, I created a workflow that:
 
 
 
+---
 
-
-**The Result (Slack Alert):**
+### ✅ The Result (Slack Alert):
 
 ![Slack Alert](slack_alerts.png)
 
