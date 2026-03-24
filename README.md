@@ -1,4 +1,4 @@
-# SAP to Slack: Automated Delay Tracker 📦
+# 📦 SAP to Slack: Automated Delay Tracker 
 
 I built this simple automation to stop the "SAP-to-Excel" struggle. Instead of jumping between T-codes and doing manual VLOOKUPs, this flow handles the heavy lifting.
 
@@ -18,13 +18,8 @@ Using **n8n**, I created a workflow that:
 ---
 
 ### 🖼️ How it looks
-**The Workflow:**
+
 ![Workflow](n8n_workflow.png)
-
-
-
-
-
 
 ---
 
